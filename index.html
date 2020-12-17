@@ -36,6 +36,7 @@
             background: url('pacman1.gif');
             background-repeat: no-repeat;
             background-position: center;
+            position: absolute;
             width: 40px;
             height: 40px;
         }
@@ -47,12 +48,13 @@
 
     <div class="container">
         <div id="world"></div>
+        <div id="pacman"></div>
     </div>
 
     <script>
         var world = [
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-            [2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+            [2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
             [2, 1, 2, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2],
             [2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 2],
             [2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 2],
@@ -68,12 +70,17 @@
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
         ];
 
+        var pacman = {
+            x: 1,
+            y: 1
+        };
+
         function displayWorld() {
             var output = '';
             var ylength = world[0].length;
 
             for (var i = 0; i < world.length; i++) {
-                output += "\n<div class='row'>\n";
+                output += "<div class='row'>";
                 for (var j = 0; j < ylength; j++) {
                     if (world[i][j] == 3)
                         output += "<div id='pacman'></div>";
@@ -84,14 +91,46 @@
                     if (world[i][j] == 0)
                         output += "<div class='empty'></div>";
                 }
-                output += "\n</div>";
+                output += "</div>";
             }
             console.log(world[0].length);
             console.log(world.length);
             document.getElementById('world').innerHTML = output;
         }
 
+        function displayPacman() {
+            document.getElementById('pacman').style.top = pacman.y * 40 + "px";
+            document.getElementById('pacman').style.left = pacman.x * 40 + "px";
+        }
+
         displayWorld();
+        displayPacman();
+
+        document.onkeydown = function(e) {
+            console.log(e);
+            var ogx = pacman.x;
+            var ogy = pacman.y;
+            if (e.keyCode == 40) {
+                pacman.y++;
+            } else if (e.keyCode == 38) {
+                pacman.y--;
+            } else if (e.keyCode == 39) {
+                pacman.x++;
+            } else if (e.keyCode == 37) {
+                pacman.x--;
+            }
+
+            if (world[pacman.y][pacman.x] == 1) {
+                world[pacman.y][pacman.x] = 0;
+                displayWorld();
+            }
+            if (world[pacman.y][pacman.x] == 2) {
+                pacman.y = ogy;
+                pacman.x = ogx;
+                displayWorld();
+            }
+            displayPacman();
+        }
     </script>
 
 </body>
